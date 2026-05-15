@@ -1,18 +1,47 @@
 #include <iostream>
+#include <fstream>
+#include <sstream> 
 #include <string>
+#include <vector>
 
+static void run(const std::string& src) {
+    Scanner scanner(src);
+    std::vector<Token> tokens = scanner.scanTokens();
+    for (const Token& t: tokens) {
+        std::cout << t << '\n';
+    }
+}
 
-static void run();
-static void runFile(const string& path);
-static void runPrompt();
+static void runFile(const std::string& path) {
+    std::ifstream file(path);
+    if (!file) {
+        std::cout << "Could not load " << path << '\n';
+        return;
+    }
+    std::stringstream buffer; 
+    buffer << file.rdbuf();
+    run(buffer.str());
+}
+
+static void runPrompt() {
+    std::string line; 
+    while (true) {
+        std::cout << "> ";
+        
+        if (!std::getline(std::cin, line)) {
+            break;
+        }
+        run(line);
+    }
+}
 
 
 int main(int argc, char* argv[]) {
-    if (argc > 1) {
+    if (argc > 2) {
         std::cout << "Usage: clox [script]";
         std::exit(64);
-    } else if (argc == 1) {
-        runFile(argv[0]);
+    } else if (argc == 2) {
+        runFile(argv[1]);
     } else {
         runPrompt();
     }

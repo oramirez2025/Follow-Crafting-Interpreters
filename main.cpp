@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+static bool hadError = false;
+
 static void run(const std::string& src) {
     Scanner scanner(src);
     std::vector<Token> tokens = scanner.scanTokens();
@@ -21,6 +23,10 @@ static void runFile(const std::string& path) {
     std::stringstream buffer; 
     buffer << file.rdbuf();
     run(buffer.str());
+
+    if (hadError) {
+        std::exit(65);
+    }
 }
 
 static void runPrompt() {
@@ -32,9 +38,19 @@ static void runPrompt() {
             break;
         }
         run(line);
+        hadError = false;
     }
 }
 
+
+static void error(int line, std::string& message) {
+    report(line, "", message);
+}
+
+static void report(int line, std::string where, std::string& message) {
+    std::cerr << "[Line " + std::to_string(line) + "] Error" + where + ": " + message + "\n";
+    hadError = true;
+}
 
 int main(int argc, char* argv[]) {
     if (argc > 2) {

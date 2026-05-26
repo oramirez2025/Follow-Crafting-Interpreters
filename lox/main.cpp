@@ -3,6 +3,7 @@
 #include <sstream> 
 #include <string>
 #include <vector>
+#include <format> 
 
 static bool hadError = false;
 
@@ -43,12 +44,12 @@ static void runPrompt() {
 }
 
 
-static void error(int line, std::string& message) {
+static void error(int line, const std::string& message) {
     report(line, "", message);
 }
 
-static void report(int line, std::string where, std::string& message) {
-    std::cerr << "[Line " + std::to_string(line) + "] Error" + where + ": " + message + "\n";
+static void report(int line, std::string where, const std::string& message) {
+    std::cerr << std::format("[Line {} ] Error {}: {}\n", line, where, message);
     hadError = true;
 }
 

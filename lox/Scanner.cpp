@@ -1,4 +1,6 @@
 #include"Scanner.h"
+#include"TokenType.h"
+#include"main.cpp"
 
 std::vector<Token> Scanner::scanTokens() {
     while (!isAtEnd()) {
@@ -26,6 +28,13 @@ void Scanner::scanToken() {
         case '+': addToken(TokenType::PLUS); break;
         case ';': addToken(TokenType::SEMICOLON); break;
         case '*': addToken(TokenType::STAR); break;
+        case '!': addToken(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG); break;
+        case '=': addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
+        case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
+        case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
+        default:
+            error(line, "Unexpected character.");
+            break;
     }
 }
 
@@ -40,4 +49,10 @@ void Scanner::addToken(TokenType type) {
 void Scanner::addToken(TokenType type, const LoxValue& literal) {
     std::string text = source.substr(start, current - start);
     tokens.push_back(Token(type, text, literal, line));
+}
+
+bool Scanner::match(char expected) {
+    return (!isAtEnd() && (source.At(curr) == expected)); 
+
+
 }

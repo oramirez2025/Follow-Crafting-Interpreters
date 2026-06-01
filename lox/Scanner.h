@@ -16,6 +16,8 @@ class Scanner {
         bool isAtEnd() const;
         void scanToken();
         char advance();
+        char peek();
+        void string();
         bool match(char expected);
         int start = 0;
         int current = 0;

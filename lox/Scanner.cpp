@@ -14,6 +14,10 @@ std::vector<Token> Scanner::scanTokens() {
 bool Scanner::isAtEnd() const {
     return current >= source.size();
 }
+char Scanner::peek() {
+    if (isAtEnd()) return '\0';
+    return source.at(current);
+}
 
 void Scanner::scanToken() {
     char c = advance();
@@ -32,6 +36,21 @@ void Scanner::scanToken() {
         case '=': addToken(match('=') ? TokenType::EQUAL_EQUAL : TokenType::EQUAL); break;
         case '<': addToken(match('=') ? TokenType::LESS_EQUAL : TokenType::LESS); break;
         case '>': addToken(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER); break;
+        case '/': 
+            if (match('/')) {
+                while (peek() != '\n' && !isAtEnd()) advance();
+            } else {
+                addToken(TokenType::SLASH);
+            }
+            break;
+        case ' ':
+        case '\r':
+        case '\t':
+            break;
+        case '\n':
+            line++;
+            break;
+        case '"': string(); break;
         default:
             error(line, "Unexpected character.");
             break;
@@ -40,6 +59,20 @@ void Scanner::scanToken() {
 
 char Scanner::advance() {
     return source.at(current++);
+}
+
+void Scanner::string() {
+    while (peek() != '"' && !isAtEnd()) {
+        if (peek() == '\n') line++;
+        advance();
+    }
+    if (isAtEnd()) {
+        error(line, "unterminated string");
+        return;
+    }
+    advance();
+    std::string value = source.substr(start + 1, current - 1);
+    addToken(TokenType::STRING, value);
 }
 
 void Scanner::addToken(TokenType type) {

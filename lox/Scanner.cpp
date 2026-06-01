@@ -52,15 +52,39 @@ void Scanner::scanToken() {
             break;
         case '"': string(); break;
         default:
-            error(line, "Unexpected character.");
-            break;
+            if (isDigit(c)) {
+                number();
+            } else {
+                error(line, "Unexpected character.");
+                break;
+            }
     }
+}
+
+char Scanner::peekNext() {
+    if (current + 1 >= source.size()) return '\0';
+    return source.at(current + 1);
+}
+
+void Scanner::number() {
+    while (isDigit(peek())) advance();
+
+    if (peek() == '.' && isDigit(peekNext())) {
+        advance();
+        while (isDigit(peek())) advance();
+    }
+    addToken(
+        TokenType::NUMBER, 
+        std::stod(source.substr(start, current))
+    );
 }
 
 char Scanner::advance() {
     return source.at(current++);
 }
-
+bool isDigit(char c) {
+    return '0' <= c && c <= '9';
+}
 void Scanner::string() {
     while (peek() != '"' && !isAtEnd()) {
         if (peek() == '\n') line++;

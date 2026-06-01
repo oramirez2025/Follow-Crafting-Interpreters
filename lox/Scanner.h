@@ -17,7 +17,9 @@ class Scanner {
         void scanToken();
         char advance();
         char peek();
+        char peekNext();
         void string();
+        void number();
         bool match(char expected);
         int start = 0;
         int current = 0;

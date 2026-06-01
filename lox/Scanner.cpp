@@ -29,9 +29,9 @@ void Scanner::scanToken() {
         case ';': addToken(TokenType::SEMICOLON); break;
         case '*': addToken(TokenType::STAR); break;
         case '!': addToken(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG); break;
-        case '=': addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
-        case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
-        case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
+        case '=': addToken(match('=') ? TokenType::EQUAL_EQUAL : TokenType::EQUAL); break;
+        case '<': addToken(match('=') ? TokenType::LESS_EQUAL : TokenType::LESS); break;
+        case '>': addToken(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER); break;
         default:
             error(line, "Unexpected character.");
             break;
@@ -52,7 +52,11 @@ void Scanner::addToken(TokenType type, const LoxValue& literal) {
 }
 
 bool Scanner::match(char expected) {
-    return (!isAtEnd() && (source.At(curr) == expected)); 
+    if (isAtEnd()) return false;
+    if (source.at(current) != expected) return false;
+
+    current++;
+    return true;
 
 
 }

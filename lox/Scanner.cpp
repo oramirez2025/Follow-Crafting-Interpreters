@@ -54,11 +54,35 @@ void Scanner::scanToken() {
         default:
             if (isDigit(c)) {
                 number();
-            } else {
+            
+            } else if (isAlpha(c)) {
+                identifier();
+            }
+            else {
                 error(line, "Unexpected character.");
                 break;
             }
     }
+}
+
+bool isAlphaNumeric(char c) {
+    return isAlpha(c) || isDigit(c);
+}
+
+bool isAlpha(char c) {
+    return (
+        (c >= 'a' && c <= 'z') || 
+        (c >= 'A' && c <= 'Z') || 
+        (c == '_')
+    );
+}
+
+void Scanner::identifier() {
+    while (isAlphaNumeric(peek())) advance();
+    std::string text = source.substr(start, current);
+    auto it = keywords.find(text);
+    TokenType type = (it != keywords.end()) ? it->second : TokenType::IDENTIFIER;
+    addToken(type);
 }
 
 char Scanner::peekNext() {

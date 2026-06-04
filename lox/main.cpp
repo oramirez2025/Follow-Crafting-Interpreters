@@ -4,14 +4,18 @@
 #include <string>
 #include <vector>
 #include <format> 
+#include "Scanner.h"
+#include "Token.h"
 
 static bool hadError = false;
+
+static void report(int line, std::string where, const std::string& message);
 
 static void run(const std::string& src) {
     Scanner scanner(src);
     std::vector<Token> tokens = scanner.scanTokens();
     for (const Token& t: tokens) {
-        std::cout << t << '\n';
+        std::cout << t.toString() << '\n';
     }
 }
 

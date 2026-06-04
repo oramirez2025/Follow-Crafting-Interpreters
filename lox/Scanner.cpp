@@ -1,6 +1,15 @@
-#include"Scanner.h"
-#include"TokenType.h"
-#include"main.cpp"
+#include "Scanner.h"
+#include "Token.h"
+#include "TokenType.h"
+#include <iostream>
+
+bool isAlpha(char c);
+bool isDigit(char c);
+bool isAlphaNumeric(char c);
+
+static void error(int line, const std::string& message) {
+    std::cerr << "[Line " << line << "] Error: " << message << '\n';
+}
 
 std::vector<Token> Scanner::scanTokens() {
     while (!isAtEnd()) {

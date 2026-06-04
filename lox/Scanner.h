@@ -28,7 +28,7 @@ class Scanner {
     private:
         std::string source;
         std::vector<Token> tokens = {};
-        static const std::unordered_map<std::string, TokenType> keywords;
+        const std::unordered_map<std::string, TokenType> keywords;
         void addToken(TokenType type);
         void addToken(TokenType type, const LoxValue& literal);
         bool isAtEnd() const;
